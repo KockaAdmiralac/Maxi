@@ -13,8 +13,10 @@ final PVector[] sensor = new PVector[] {
   new PVector(0, 0),
   new PVector(100, 0)
 };
+// Debug mode variables
 boolean debug = true;
-final float UNIT = 1;
+int row = 0;
+PrintWriter output;
 
 // Parses an integer that starts with zeroes
 int customParseInt(String str) {
@@ -25,6 +27,7 @@ int customParseInt(String str) {
   return int(str);
 }
 
+// Calculates distance from a certain sensor
 float distance(int var, int sensor) {
   float x = 1 / sqrt(var);
   switch (sensor) {
@@ -48,6 +51,9 @@ void setup() {
   // Draw waiting text
   background(255, 255, 255);
   text("Waiting for serial connection...", 0, 0, width, height);
+  if (debug) {
+    output = createWriter("Maxi.txt");
+  }
 }
 
 // Executed every frame
@@ -87,49 +93,45 @@ void calculatePosition() {
   float cv2 = distance(v2, 2);
   float cv3 = distance(v3, 3);
   // float cv4 = distance(v4, 4);
-  println(cv1 + " " + cv2 + " " + cv3);
   for (int x = 0; x < 100; ++x) {
     for (int y = 0; y < 100; ++y) {
-      d0x = (sensor[0].x - x) * UNIT;
-      d0y = (sensor[0].y - y) * UNIT;
-      d1x = (sensor[1].x - x) * UNIT;
-      d1y = (sensor[1].y - y) * UNIT;
-      d2x = (sensor[2].x - x) * UNIT;
-      d2y = (sensor[2].y - y) * UNIT;
+      d0x = sensor[0].x - x;
+      d0y = sensor[0].y - y;
+      d1x = sensor[1].x - x;
+      d1y = sensor[1].y - y;
+      d2x = sensor[2].x - x;
+      d2y = sensor[2].y - y;
       tempX = sqrt(d0x * d0x + d0y * d0y);
       tempY = sqrt(d1x * d1x + d1y * d1y);
       tempZ = sqrt(d2x * d2x + d2y * d2y);
-      tempU = abs(tempX - cv1) + abs(tempY - cv2) + abs(tempZ - cv3);
-      
-        if (tempU < min) {
-         println("debuhhhhhhhhh");
-          pos.x = x; //<>//
+      tempU = abs(tempX - cv1) + abs(tempY - cv2) + abs(tempZ - cv3);      
+      if (tempU < min) {
+        pos.x = x; //<>//
         pos.y = y;
         min = tempU;
       }
     }
   }
-println("posX="+pos.x);
-println("posY="+pos.y);
-
-
 }
 
 // Draws everything useful
 void drawPosition() {
   background(0, 0, 0);
-    stroke(255, 0, 0);
+  stroke(255, 0, 0);
   noFill();
   rect(250, 0, 500, 500);
-  ellipse(250,0,distance(v2,2)*10,distance(v2,2)*10);
-  ellipse(250,500,distance(v1,1)*10,distance(v1,1)*10);
-  ellipse(750,0,distance(v3,3)*10,distance(v3,3)*10);
+  float d1 = distance(v1, 1) * 10;
+  float d2 = distance(v2, 2) * 10;
+  float d3 = distance(v3, 3) * 10;
+  ellipse(250, 500, d1, d1);
+  ellipse(250, 0, d2, d2);
+  ellipse(750, 0, d3, d3);
   fill(0, 0, 0);
   noStroke();
   rect(0, 0, 249, 500);
   rect(751, 0, 1000, 500);
   fill(255, 255, 255);
-  ellipse(pos.x*5 + 250, pos.y*5, velicinaX, velicinaY);
+  ellipse(pos.x * 5 + 250, pos.y * 5, velicinaX, velicinaY);
   if (debug) {
     text(
       "V1: " + v1 + "\nV2: " + v2 + "\nV3: " + v3 +
@@ -143,6 +145,7 @@ void drawPosition() {
   }
 }
 
+// Fires when a pipe sign is encountered
 void serialEvent(Serial s) {
   read = s.readString();
   if (read != null) {
@@ -156,5 +159,19 @@ void serialEvent(Serial s) {
     v3 = customParseInt(split[2]);
     v4 = customParseInt(split[3]);
     calculatePosition();
+  }
+}
+
+// Records data when spacebar is clicked while in debug mode
+void keyPressed() {
+  if (keyCode == 32 && debug) {
+    output.print("[" + pos.x + ", " + pos.y + "] ");
+    if (++row == 41  ) {
+      output.println();
+      row = 0;
+      println("Going into new row...");
+    }
+    output.flush();
+    println("Recorded! (" + row + ")");
   }
 }
