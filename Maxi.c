@@ -17,7 +17,7 @@ void sendChannel(int channel) {
 
 void main() {
      // RA0, RA1 and RA2 are used for UART
-     ANSELA = 0x07;
+     ANSELA = 0x0F;
      ANSELC = 0;
      // Initialize UART
      UART1_Init(9600);
@@ -26,6 +26,7 @@ void main() {
      sendDelimiter();
      // Program loop
      while (1) {
+           sendChannel(0);
            sendChannel(1);
            sendChannel(2);
            sendChannel(3);
