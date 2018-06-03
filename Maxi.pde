@@ -26,8 +26,14 @@ int customParseInt(String str) {
 }
 
 float distance(int var, int sensor) {
-  // IMPLEMENT THIS AFTER APPROXIMATION RESULTS!!!
-  return 5.5;
+  float x = 1 / sqrt(var);
+  switch (sensor) {
+    case 3: return 2358.7 * x - 66.535;
+    case 2: return 1603.3 * x - 43.249;
+    case 1: return 1956.9 * x - 57.712;
+    // case 4:
+    default: return 5.5f;
+  }
 }
 
 // Sets up the simulation
@@ -77,12 +83,12 @@ void calculatePosition() {
   float tempX = 0, tempY = 0, tempZ = 0, tempU = 0;
   float d0x, d0y, d1x, d1y, d2x, d2y;
   float cv1 = distance(v1, 1);
-  // Not a bug :^)
-  float cv2 = distance(v3, 2);
-  float cv3 = distance(v2, 3);
+  float cv2 = distance(v2, 2);
+  float cv3 = distance(v3, 3);
+  float cv4 = distance(v4, 4);
+  println(cv1 + " " + cv2 + " " + cv3);
   for (int x = 0; x < 500; ++x) {
     for (int y = 0; y < 500; ++y) {
-      // Treba naći razmeru sensor value i razdaljine
       d0x = (sensor[0].x - x) * UNIT;
       d0y = (sensor[0].y - y) * UNIT;
       d1x = (sensor[1].x - x) * UNIT;
@@ -100,7 +106,6 @@ void calculatePosition() {
       }
     }
   }
-  // println(pos.x + " " + pos.y + " " + pos.z);
 }
 
 // Draws everything useful
@@ -112,7 +117,8 @@ void drawPosition() {
   if (debug) {
     text(
       "V1: " + v1 + "\nV2: " + v2 + "\nV3: " + v3 +
-      "\nV4: " + v4 + "\nX: " + pos.x + "\nY: " + pos.y,
+      "\nV4: " + v4 + "\nX: " + pos.x + "\nY: " + pos.y +
+      "\nZ: " + pos.z,
       10,
       10,
       250,
