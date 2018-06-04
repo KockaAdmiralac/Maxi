@@ -32,7 +32,7 @@ int customParseInt(String str) {
 }
 
 // Calculates distance from a certain sensor
-float distance(int var, int sensor) {
+float distance(float var, int sensor) {
   float x = 1 / sqrt(var);
   switch (sensor) {
     case 4: return 2358.7 * x - 66.535; // TODO
@@ -183,7 +183,7 @@ void keyPressed() {
   if (keyCode == 32 && debug) {
     // Records data when spacebar is clicked while in debug mode
     output.print("[" + pos.x + ", " + pos.y + "] ");
-    if (++row == 41  ) {
+    if (++row == 6) {
       output.println();
       row = 0;
       println("Going into new row...");

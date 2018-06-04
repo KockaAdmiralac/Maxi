@@ -1857,3 +1857,109 @@ f = [[974 974 973],
      [147 144 142],
      [140 139 137],
      [140 139 137]];
+% Plotting all calibration data
+x = (1:39) .* (2.5 * sqrt(2));
+a1 = a(:, 1)';
+a2 = a(:, 2)';
+a3 = a(:, 3)';
+am = mean(a');
+b1 = b(:, 1)';
+b2 = b(:, 2)';
+b3 = b(:, 3)';
+bm = mean(b');
+c1 = c(:, 1)';
+c2 = c(:, 2)';
+c3 = c(:, 3)';
+cm = mean(c');
+d1 = f(:, 1)';
+d2 = f(:, 2)';
+d3 = f(:, 3)';
+dm = mean(f');
+P1 = subplot(2, 2, 1);
+P2 = subplot(2, 2, 2);
+P3 = subplot(2, 2, 3);
+P4 = subplot(2, 2, 4);
+AX1 = plot(P1, x, a1, "r");
+hold on;
+grid on;
+xlabel("Razdaljina [cm]");
+ylabel("Merenje senzora");
+title("Kalibracija prvog senzora");
+AX2 = plot(P1, x, a2, "g");
+AX3 = plot(P1, x, a3, "b");
+AX4 = plot(P1, x, am, "m");
+plot(P2, x, b1, "r");
+hold on;
+grid on;
+xlabel("Razdaljina [cm]");
+ylabel("Merenje senzora");
+title("Kalibracija drugog senzora");
+plot(P2, x, b2, "g");
+plot(P2, x, b3, "b");
+plot(P2, x, bm, "m");
+plot(P3, x, c1, "r");
+hold on;
+grid on;
+xlabel("Razdaljina [cm]");
+ylabel("Merenje senzora");
+title("Kalibracija treceg senzora");
+plot(P3, x, c2, "g");
+plot(P3, x, c3, "b");
+plot(P3, x, cm, "m");
+plot(P4, x, d1, "r");
+hold on;
+grid on;
+xlabel("Razdaljina [cm]");
+ylabel("Merenje senzora");
+title("Kalibracija cetvrtog senzora");
+plot(P4, x, d2, "g");
+plot(P4, x, d3, "b");
+plot(P4, x, dm, "m");
+
+% Donji desni
+d1 = zeros(6, 6, 2);
+d1(1, :, :) = [[55.0, 55.0],
+               [55.0, 56.0],
+               [56.0, 56.0],
+               [57.0, 56.0],
+               [60.0, 53.0],
+               [58.0, 56.0]];
+d1(2, :, :) = [[54.0, 57.0],
+               [58.0, 55.0],
+               [59.0, 55.0],
+               [57.0, 58.0],
+               [60.0, 55.0],
+               [58.0, 58.0]];
+d1(3, :, :) = [[55.0, 58.0],
+               [57.0, 57.0],
+               [57.0, 58.0],
+               [56.0, 59.0],
+               [60.0, 56.0],
+               [58.0, 59.0]];
+d1(4, :, :) = [[55.0, 59.0],
+               [57.0, 58.0],
+               [58.0, 59.0],
+               [57.0, 59.0],
+               [60.0, 57.0],
+               [61.0, 57.0]];
+d1(5, :, :) = [[58.0, 58.0],
+               [58.0, 58.0],
+               [56.0, 60.0],
+               [57.0, 60.0],
+               [57.0, 61.0],
+               [58.0, 61.0]];
+d1(6, :, :) = [[57.0, 59.0],
+               [55.0, 61.0],
+               [58.0, 59.0],
+               [57.0, 61.0],
+               [57.0, 61.0],
+               [60.0, 60.0]];
+z1 = zeros(6, 6);
+for i = 1:6
+  for j = 1:6
+    z1(i, j) = abs(sqrt(d1(i, j, 1)^2 + d1(i, j, 2)^2) - sqrt((50 - (i-1) * (2.5 / 6))^2 + (50 - (j-1) * (2.5 / 6))^2));
+  endfor
+endfor
+imagesc(z1);
+colormap hot;
+colorbar;
