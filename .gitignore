@@ -22,4 +22,6 @@
 
 # No idea what this is but it's probably useless
 *.brk
-*.mcppi_callertable.txt
+
+# Various generated files
+*.txt
